@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบบันทึกประวัติผู้ป่วยและการรักษา</title>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
- <script src="Sarabun-normal.js"></script>
+     <script src="Sarabun-normal.js"></script>
     <style>
-       body, input, select, textarea {
-            font-family: 'Sarabun', sans-serif;
-         }   
+      
         body { font-family: 'Sarabun', sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; }
-        .container { max-width: 1200px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+       
+    .container { max-width: 1200px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1, h2 { color: #333; }
         .tabs { display: flex; margin-bottom: 20px; }
         .tab { padding: 10px 20px; cursor: pointer; border: none; background-color: #ddd; font-size: 16px; }
@@ -30,41 +29,12 @@
         #bodyChartContainer { position: relative; width: 300px; height: 400px; }
         #bodyChartImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
         #bodyChart { position: absolute; top: 0; left: 0; }
-
-        /* CSS สำหรับใบรับรองแพทย์ */
-        @font-face {
-            font-family: 'TH Sarabun PSK';
-            src: url('THSarabunPSK.ttf') format('truetype');
-        }
-        .medical-certificate {
-            display: none;
-            width: 21cm;
-            height: 29.7cm;
-            padding: 2cm;
-            margin: 1cm auto;
-            background: white;
-            font-family: 'TH Sarabun', sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            
-        }
-        .medical-certificate .header { text-align: center; margin-bottom: 20px; }
-        .medical-certificate .title { font-size: 20px; font-weight: bold; text-align: center; margin: 20px 0; }
-        .medical-certificate .form-row { margin-bottom: 10px; }
-        .medical-certificate .form-row label { display: inline-block; width: 200px; }
-        .medical-certificate .form-row input, .medical-certificate .form-row select { width: 250px; font-family: 'TH Sarabun PSK', sans-serif; font-size: 16px; }
-        .medical-certificate .signature { margin-top: 50px; text-align: center; }
-        @media print {
-            body * { visibility: hidden; }
-            .medical-certificate, .medical-certificate * { visibility: visible; }
-            .medical-certificate { position: absolute; left: 0; top: 0; }
-        }
+         #medicalCertificate { display: none; }
+   
     </style>
 </head>
 <body>
-    </style>
-</head>
-<body>
+   
     <div class="container">
         <h1>ระบบบันทึกประวัติผู้ป่วยและการรักษา</h1>
         
@@ -121,6 +91,7 @@
                 <textarea id="treatment" placeholder="การรักษา"></textarea>
                 <textarea id="medication" placeholder="ยาที่ได้รับ"></textarea>
                 <input type="date" id="nextAppointment" placeholder="วันนัดครั้งต่อไป">
+               
                 <div id="bodyChartContainer">
                     <img id="bodyChartImage" src="https://st5.depositphotos.com/6464944/64924/v/1600/depositphotos_649242858-stock-illustration-human-male-body-anatomy-featuring.jpg" alt="Body Chart">
                     <canvas id="bodyChart" width="300" height="400"></canvas>
@@ -128,8 +99,7 @@
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
                 <button onclick="showMedicalCertificate()">สร้างใบรับรองแพทย์</button>
-                 </div>
-            </form>
+             
             
             <h2>ประวัติการรักษา</h2>
             <table id="treatmentHistory">
@@ -215,7 +185,7 @@
              </div>
             <button onclick="generateMedicalCertificatePDF()">สร้าง PDF ใบรับรองแพทย์</button>
     </div>
-     </div>
+ </div>
   
     
     <script>
@@ -236,8 +206,7 @@
 
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+               document.getElementById(tabId).style.display = 'block';
             document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
         }
 
