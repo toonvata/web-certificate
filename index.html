@@ -38,15 +38,16 @@
             src: url('THSarabunPSK.ttf') format('truetype');
         }
         .medical-certificate {
+            display: none;
             width: 21cm;
             height: 29.7cm;
             padding: 2cm;
             margin: 1cm auto;
             background: white;
-            font-family: 'TH Sarabun PSK', sans-serif;
+            font-family: 'TH Sarabun', sans-serif;
             font-size: 16px;
             line-height: 1.5;
-            display: none;
+            
         }
         .medical-certificate .header { text-align: center; margin-bottom: 20px; }
         .medical-certificate .title { font-size: 20px; font-weight: bold; text-align: center; margin: 20px 0; }
@@ -127,6 +128,8 @@
                 </div>
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
+                <button onclick="showMedicalCertificate()">สร้างใบรับรองแพทย์</button>
+                 </div>
             </form>
             
             <h2>ประวัติการรักษา</h2>
@@ -146,7 +149,7 @@
     </div>
 
     <!-- เพิ่มส่วนของใบรับรองแพทย์ -->
-        <div id="medicalCertificate">
+        <div id="medicalCertificate" class="medicalCertificate">
             <div class="header">
                 <h1>เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก</h1>
                 <p>162 ถนนสวนสมเด็จ ต.หน้าเมือง อ.เมือง จ.ฉะเชิงเทรา</p>
@@ -211,9 +214,9 @@
                 <p>แพทย์ผู้ตรวจ</p>
             </div>
              </div>
-            <button id="generatePDF" onclick="generateMedicalCertificatePDF()">สร้าง PDF ใบรับรองแพทย์</button>
+            <button onclick="generateMedicalCertificatePDF()">สร้าง PDF ใบรับรองแพทย์</button>
     </div>
-       
+     </div>
   
     
     <script>
@@ -537,16 +540,20 @@
         function showMedicalCertificate(patientHN, treatmentDate) {
             const patient = patients.find(p => p.hn === patientHN);
             const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
-            
+         if (!selectedPatient) {
+                alert('กรุณาเลือกผู้ป่วยก่อนสร้างใบรับรองแพทย์');
+                return;
+         }
             if (patient && treatment) {
-                document.getElementById('certificateNumber').value = 'MC' + Date.now().toString().slice(-6);
-                document.getElementById('patientName').value = patient.name;
+                document.getElementById('certificateNumber').value = generateCertificateNumber();
+                document.getElementById('patientName').value = selectedPatient.name;
                 document.getElementById('examinationDate').value = treatment.date;
                 document.getElementById('diagnosis').value = treatment.diagnosis;
                 document.getElementById('startDate').value = treatment.date;
                 document.getElementById('endDate').value = treatment.nextAppointment || treatment.date;
                 calculateDays();
-
+               
+               
                 document.getElementById('medicalCertificate').style.display = 'block';
                 document.getElementById('printMedicalCertificate').style.display = 'block';
             }
@@ -563,6 +570,10 @@
         document.getElementById('startDate').addEventListener('change', calculateDays);
         document.getElementById('endDate').addEventListener('change', calculateDays);
 
+          function generateCertificateNumber() {
+            // สร้างเลขที่ใบรับรองแพทย์
+            return 'CERT' + Date.now().toString().slice(-6);
+        }
           function generateMedicalCertificatePDF() {
             const { jsPDF } = window.jspdf;
 
