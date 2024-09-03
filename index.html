@@ -26,47 +26,33 @@
         #bodyChartContainer { position: relative; width: 300px; height: 400px; }
         #bodyChartImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
         #bodyChart { position: absolute; top: 0; left: 0; }
-.medical-certificate {
+
+        /* CSS สำหรับใบรับรองแพทย์ */
+        @font-face {
+            font-family: 'TH Sarabun PSK';
+            src: url('THSarabunPSK.ttf') format('truetype');
+        }
+        .medical-certificate {
             width: 21cm;
             height: 29.7cm;
             padding: 2cm;
             margin: 1cm auto;
-            border: 1px #D3D3D3 solid;
-            border-radius: 5px;
             background: white;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            font-family: 'TH Sarabun PSK', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            display: none;
         }
-        .medical-certificate h1 {
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .clinic-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-row {
-            margin-bottom: 10px;
-        }
-        .form-row label {
-            display: inline-block;
-            width: 150px;
-        }
-        .form-row input, .form-row select {
-            width: 200px;
-        }
+        .medical-certificate .header { text-align: center; margin-bottom: 20px; }
+        .medical-certificate .title { font-size: 20px; font-weight: bold; text-align: center; margin: 20px 0; }
+        .medical-certificate .form-row { margin-bottom: 10px; }
+        .medical-certificate .form-row label { display: inline-block; width: 200px; }
+        .medical-certificate .form-row input, .medical-certificate .form-row select { width: 250px; font-family: 'TH Sarabun PSK', sans-serif; font-size: 16px; }
+        .medical-certificate .signature { margin-top: 50px; text-align: center; }
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            .medical-certificate, .medical-certificate * {
-                visibility: visible;
-            }
-            .medical-certificate {
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
+            body * { visibility: hidden; }
+            .medical-certificate, .medical-certificate * { visibility: visible; }
+            .medical-certificate { position: absolute; left: 0; top: 0; }
         }
     </style>
 </head>
@@ -154,53 +140,72 @@
         </div>
     </div>
 
-    <div id="treatmentDetailModal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px;">
-            <span style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;" onclick="closeTreatmentDetailModal()">&times;</span>
-            <div id="treatmentDetailContent"></div>
-        </div>
-    </div>
- <div id="medicalCertificateModal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-        <div class="medical-certificate">
-            <span style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;" onclick="closeMedicalCertificateModal()">&times;</span>
-            <h1>ใบรับรองแพทย์</h1>
-            <div class="clinic-info">
-                <p>เฮ้าส์ ออฟ เฮิร์บ เวลเนส สหคลินิก</p>
-                <p>162 ถนน สวนสมเด็จ ต.หน้าเมือง อ.เมือง จ.ฉะเชิงเทรา</p>
+    <!-- เพิ่มส่วนของใบรับรองแพทย์ -->
+        <div id="medicalCertificate" class="medical-certificate">
+            <div class="header">
+                <h1>เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก</h1>
+                <p>162 ถนนสวนสมเด็จ ต.หน้าเมือง อ.เมือง จ.ฉะเชิงเทรา</p>
             </div>
-            <form id="medicalCertificateForm">
-                <div class="form-row">
-                    <label for="certificateDate">วันที่:</label>
-                    <input type="date" id="certificateDate" required>
-                </div>
-                <div class="form-row">
-                    <label for="patientName">ข้าพเจ้า:</label>
-                    <input type="text" id="patientName" readonly>
-                </div>
-                <div class="form-row">
-                    <label for="diagnosis">ได้ตรวจรักษาโรค:</label>
-                    <input type="text" id="diagnosis" required>
-                </div>
-                <div class="form-row">
-                    <label for="treatmentPeriod">ซึ่งป่วยเป็นโรคนี้มาเป็นเวลา:</label>
-                    <input type="text" id="treatmentPeriod" required>
-                </div>
-                <div class="form-row">
-                    <label for="restPeriod">และสมควรให้หยุดพักรักษาตัวเป็นเวลา:</label>
-                    <input type="text" id="restPeriod" required>
-                </div>
-                <div class="form-row">
-                    <label for="doctorName">แพทย์ผู้ตรวจ:</label>
-                    <select id="doctorName" required>
-                        <option value="">เลือกแพทย์</option>
-                        <option value="แพทย์นิรัตน์พงศ์ เชาวนิช">แพทย์นิรัตน์พงศ์ เชาวนิช</option>
-                        <option value="นายวาตา โสดา">นายวาตา โสดา</option>
-                    </select>
-                </div>
+            <div class="title">ใบรับรองแพทย์ / Medical Certificate</div>
+            <div class="form-row">
+                <label for="certificateNumber">เลขที่:</label>
+                <input type="text" id="certificateNumber" readonly>
+            </div>
+            <div class="form-row">
+                <label for="doctorName">ข้าพเจ้า:</label>
+                <select id="doctorName" required>
+                    <option value="">เลือกแพทย์</option>
+                    <option value="แพทย์นิรัตน์พงศ์ เชาวนิช">แพทย์นิรัตน์พงศ์ เชาวนิช</option>
+                    <option value="นายวาตา โสดา">นายวาตา โสดา</option>
+                </select>
+            </div>
+            <p>ปฏิบัติงาน ณ เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก</p>
+            <div class="form-row">
+                <label for="licenseType">เป็นผู้ประกอบวิชาชีพ:</label>
+                <select id="licenseType" required>
+                    <option value="">เลือกประเภทใบอนุญาต</option>
+                    <option value="เวชกรรมแผนปัจจุบัน">เวชกรรมแผนปัจจุบัน</option>
+                    <option value="แพทย์แผนไทยประยุกต์">แพทย์แผนไทยประยุกต์</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="licenseNumber">ใบอนุญาตประกอบวิชาชีพเลขที่:</label>
+                <input type="text" id="licenseNumber" required>
+            </div>
+            <div class="form-row">
+                <label for="patientName">ได้ตรวจร่างกายผู้ป่วยชื่อ:</label>
+                <input type="text" id="patientName" required>
+            </div>
+            <div class="form-row">
+                <label for="examinationDate">เมื่อวันที่:</label>
+                <input type="date" id="examinationDate" required>
+            </div>
+            <div class="form-row">
+                <label for="diagnosis">เห็นว่า:</label>
+                <input type="text" id="diagnosis" required>
+            </div>
+            <div class="form-row">
+                <label for="startDate">ตั้งแต่วันที่:</label>
+                <input type="date" id="startDate" required>
+            </div>
+            <div class="form-row">
+                <label for="endDate">ถึงวันที่:</label>
+                <input type="date" id="endDate" required>
+            </div>
+            <div class="form-row">
+                <label for="totalDays">เป็นจำนวน:</label>
+                <input type="number" id="totalDays" required> วัน
+            </div>
+            <p>ทั้งนี้ได้ให้การรักษาพร้อมคำแนะนำไว้เรียบร้อยแล้ว</p>
+            <div class="signature">
+                <p>ลงนาม ............................................</p>
+                <p>แพทย์ผู้ตรวจ</p>
+            </div>
                 <button type="submit">พิมพ์ใบรับรองแพทย์</button>
             </form>
         </div>
     </div>
+    
     <script>
         let patients = JSON.parse(localStorage.getItem('patients')) || [];
         let treatments = JSON.parse(localStorage.getItem('treatments')) || [];
@@ -518,26 +523,34 @@
         }
     }
 
-  function showMedicalCertificateModal(patientHN, treatmentDate) {
+ // เพิ่มฟังก์ชันสำหรับใบรับรองแพทย์
+        function showMedicalCertificate(patientHN, treatmentDate) {
             const patient = patients.find(p => p.hn === patientHN);
             const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
             
             if (patient && treatment) {
+                document.getElementById('certificateNumber').value = 'MC' + Date.now().toString().slice(-6);
                 document.getElementById('patientName').value = patient.name;
+                document.getElementById('examinationDate').value = treatment.date;
                 document.getElementById('diagnosis').value = treatment.diagnosis;
-                document.getElementById('certificateDate').value = new Date().toISOString().split('T')[0];
-                document.getElementById('medicalCertificateModal').style.display = 'block';
+                document.getElementById('startDate').value = treatment.date;
+                document.getElementById('endDate').value = treatment.nextAppointment || treatment.date;
+                calculateDays();
+
+                document.getElementById('medicalCertificate').style.display = 'block';
             }
         }
 
-        function closeMedicalCertificateModal() {
-            document.getElementById('medicalCertificateModal').style.display = 'none';
+        function calculateDays() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const diffTime = Math.abs(endDate - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            document.getElementById('totalDays').value = diffDays;
         }
 
-        document.getElementById('medicalCertificateForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            window.print();
-        });
+        document.getElementById('startDate').addEventListener('change', calculateDays);
+        document.getElementById('endDate').addEventListener('change', calculateDays);
 
         // อัปเดตฟังก์ชัน loadTreatmentHistory เพื่อเพิ่มปุ่มออกใบรับรองแพทย์
         function loadTreatmentHistory() {
@@ -557,10 +570,15 @@
                     actionsCell.innerHTML = `
                         <button onclick="showTreatmentDetail('${treatment.patientHN}', '${treatment.date}')">รายละเอียด</button>
                         <button onclick="deleteTreatment('${treatment.patientHN}', '${treatment.date}')">ลบ</button>
-                        <button onclick="showMedicalCertificateModal('${treatment.patientHN}', '${treatment.date}')">ออกใบรับรองแพทย์</button>
+                        <button onclick="showMedicalCertificate('${treatment.patientHN}', '${treatment.date}')">ออกใบรับรองแพทย์</button>
                     `;
                 });
         }
-</script>
+
+        // เพิ่มฟังก์ชันสำหรับพิมพ์ใบรับรองแพทย์
+        function printMedicalCertificate() {
+            window.print();
+        }
+    </script>
 </body>
 </html>
