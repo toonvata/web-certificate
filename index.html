@@ -149,7 +149,7 @@
             <div class="title">ใบรับรองแพทย์ / Medical Certificate</div>
             <div class="form-row">
                 <label for="certificateNumber">เลขที่:</label>
-                <input type="text" id="certificateNumber" readonly>
+                <input type="text" id="certificateNumber" placeholder="certificateNumber (สร้างอัตโนมัติ)" readonly>
             </div>
             <div class="form-row">
                 <label for="doctorName">ข้าพเจ้า:</label>
@@ -205,10 +205,11 @@
                 <p>ลงนาม ............................................</p>
                 <p>แพทย์ผู้ตรวจ</p>
             </div>
-                <button type="submit">พิมพ์ใบรับรองแพทย์</button>
-            </form>
-        </div>
+             </div>
+            <button id="printMedicalCertificate" onclick="printMedicalCertificate()" style="display:none;">พิมพ์ใบรับรองแพทย์</button>
     </div>
+       
+  
     
     <script>
         let patients = JSON.parse(localStorage.getItem('patients')) || [];
@@ -542,6 +543,7 @@
                 calculateDays();
 
                 document.getElementById('medicalCertificate').style.display = 'block';
+                document.getElementById('printMedicalCertificate').style.display = 'block';
             }
         }
 
@@ -556,6 +558,11 @@
         document.getElementById('startDate').addEventListener('change', calculateDays);
         document.getElementById('endDate').addEventListener('change', calculateDays);
 
+         // ฟังก์ชันสำหรับพิมพ์ใบรับรองแพทย์
+        function printMedicalCertificate() {
+            window.print();
+        }
+        
         // อัปเดตฟังก์ชัน loadTreatmentHistory เพื่อเพิ่มปุ่มออกใบรับรองแพทย์
         function loadTreatmentHistory() {
             if (!selectedPatient) return;
@@ -577,11 +584,6 @@
                         <button onclick="showMedicalCertificate('${treatment.patientHN}', '${treatment.date}')">ออกใบรับรองแพทย์</button>
                     `;
                 });
-        }
-
-        // เพิ่มฟังก์ชันสำหรับพิมพ์ใบรับรองแพทย์
-        function printMedicalCertificate() {
-            window.print();
         }
     </script>
 </body>
