@@ -92,10 +92,10 @@
                 <textarea id="medication" placeholder="ยาที่ได้รับ"></textarea>
                 <input type="date" id="nextAppointment" placeholder="วันนัดครั้งต่อไป">
                
-                <div id="bodyChartContainer">
-                    <img id="bodyChartImage" src="https://st5.depositphotos.com/6464944/64924/v/1600/depositphotos_649242858-stock-illustration-human-male-body-anatomy-featuring.jpg" alt="Body Chart">
-                    <canvas id="bodyChart" width="300" height="400"></canvas>
-                </div>
+            <div id="bodyChartContainer" style="position: relative; width: 300px; height: 400px;">
+                <img id="bodyChartImage" src="https://st5.depositphotos.com/6464944/64924/v/1600/depositphotos_649242858-stock-illustration-human-male-body-anatomy-featuring.jpg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                <canvas id="bodyChart" style="position: absolute; top: 0; left: 0;"></canvas>
+            </div>
                 
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
@@ -189,11 +189,11 @@
                 bodyChart: canvas.toDataURL()
             };
             treatments.push(treatment);
+            saveTreatments();
             loadTreatmentHistory();
             document.getElementById('treatmentForm').reset();
-            e.target.reset();
-            clearBodyChart();
-        }
+            clearBodyChart(); // ล้างรูปวาดหลังจากบันทึก
+            }
 
         function generateHN() {
             return 'HN' + Date.now().toString().slice(-6);
@@ -364,16 +364,33 @@
         }
     }
 
-         function initializeBodyChart() {
-            canvas = new fabric.Canvas('bodyChart');
-            canvas.isDrawingMode = true;
-            canvas.freeDrawingBrush.width = 2;
-            canvas.freeDrawingBrush.color = "#ff0000";
-        }
+        function initializeBodyChart() {
+    canvas = new fabric.Canvas('bodyChart', {
+        width: 300,
+        height: 400
+    });
 
-        function clearBodyChart() {
-            canvas.clear();
-        }
+    fabric.Image.fromURL(document.getElementById('bodyChartImage').src, function(img) {
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height
+        });
+    });
+
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingBrush.width = 2;
+    canvas.freeDrawingBrush.color = "#ff0000";
+}
+
+     function clearBodyChart() {
+    canvas.clear();
+    fabric.Image.fromURL(document.getElementById('bodyChartImage').src, function(img) {
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height
+        });
+    });
+}
         
     function updateBodyChart(dataUrl) {
         if (dataUrl) {
