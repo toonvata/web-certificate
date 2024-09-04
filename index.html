@@ -74,9 +74,10 @@
         
         <div id="treatmentTabContent" class="tab-content">
             <h2>บันทึกการรักษา</h2>
-            <input type="text" id="treatmentPatientSearch" placeholder="ค้นหาผู้ป่วย (ชื่อหรือ HN)">
+            
             <div id="selectedPatientInfo" class="patient-info-box"></div>
             <form id="treatmentForm">
+                <input type="text" id="treatmentPatientSearch" placeholder="ค้นหาผู้ป่วย (ชื่อหรือ HN)">
                 <input type="date" id="treatmentDate" required>
                 <fieldset>
                     <legend>Vital Signs</legend>
@@ -98,7 +99,8 @@
                 
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
-             
+             </form>
+            
             <h2>ประวัติการรักษา</h2>
             <table id="treatmentHistory">
                 <thead>
@@ -235,10 +237,10 @@
                 allergies: document.getElementById('allergies').value
             };
             patients.push(patient);
-            savePatients();
             loadPatients();
                document.getElementById('patientForm').reset();
         }
+        
           function savePatients() {
             localStorage.setItem('patients', JSON.stringify(patients));
         }
@@ -266,8 +268,8 @@
                 bodyChart: canvas.toDataURL()
             };
             treatments.push(treatment);
-            saveTreatments();
             loadTreatmentHistory();
+            document.getElementById('treatmentForm').reset();
             e.target.reset();
             clearBodyChart();
         }
@@ -299,8 +301,8 @@
             });
         }
 
-        function selectPatient(patient) {
-            selectedPatient = patient;
+        function selectPatient(hn) {
+            selectedPatient = patients.find(p => p.hn === hn);
             document.getElementById('selectedPatientInfo').innerHTML = `
                 <h3>ข้อมูลผู้ป่วย</h3>
                 <p><strong>HN:</strong> ${patient.hn}</p>
@@ -516,7 +518,7 @@
                 return;
          }
             if (patient && treatment) {
-                document.getElementById('certificateNumber').value = generateCertificateNumber();
+                document.getElementById('certificateNumber').value = 'CERT' + Date.now().toString().slice(-6);
                 document.getElementById('patientName').value = selectedPatient.name;
                 document.getElementById('examinationDate').value = treatment.date;
                 document.getElementById('diagnosis').value = treatment.diagnosis;
@@ -545,6 +547,8 @@
             // สร้างเลขที่ใบรับรองแพทย์
             return 'CERT' + Date.now().toString().slice(-6);
         }
+
+        
           function generateMedicalCertificatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
