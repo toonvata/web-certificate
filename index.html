@@ -124,7 +124,15 @@
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
              </form>
-            
+            <div id="treatmentDetailModal" style="display:none;">
+    <div id="treatmentDetailContent"></div>
+    <button onclick="closeTreatmentDetailModal()">ปิด</button>
+</div>
+
+<!-- สำหรับแสดงใบรับรองแพทย์ -->
+<div id="medicalCertificate" style="display:none;">
+    <!-- เนื้อหาของใบรับรองแพทย์ -->
+</div>
             <h2>ประวัติการรักษา</h2>
             <table id="treatmentHistory">
                 <thead>
@@ -222,6 +230,9 @@
             clearBodyChart(); // ล้างรูปวาดหลังจากบันทึก
             alert('บันทึกการรักษาเรียบร้อยแล้ว');
             }
+            document.getElementById('treatmentForm').addEventListener('submit', addTreatment);
+
+
 
         function generateHN() {
             return 'HN' + Date.now().toString().slice(-6);
@@ -512,10 +523,7 @@
         function showMedicalCertificate(patientHN, treatmentDate) {
             const patient = patients.find(p => p.hn === patientHN);
             const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
-         if (!selectedPatient) {
-                alert('กรุณาเลือกผู้ป่วยก่อนสร้างใบรับรองแพทย์');
-                return;
-         }
+        
             if (patient && treatment) {
                 document.getElementById('certificateNumber').value = 'CERT' + Date.now().toString().slice(-6);
                 document.getElementById('patientName').value = selectedPatient.name;
@@ -527,7 +535,6 @@
                
                
                 document.getElementById('medicalCertificate').style.display = 'block';
-                document.getElementById('printMedicalCertificate').style.display = 'block';
             }
         }
 
