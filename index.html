@@ -144,21 +144,11 @@
                 document.getElementById('medicalCertificate').style.display = 'none';
             }
         }
-        function initializeBodyChart() {
-            canvas = new fabric.Canvas('bodyChart');
-            canvas.isDrawingMode = true;
-            canvas.freeDrawingBrush.width = 2;
-            canvas.freeDrawingBrush.color = "#ff0000";
-        }
-
-        function clearBodyChart() {
-            canvas.clear();
-        }
 
         function addPatient(e) {
             e.preventDefault();
             const patient = {
-                hn: generateHN(),
+                hn:  'HN' + Date.now().toString().slice(-6),
                 name: document.getElementById('name').value,
                 birthdate: document.getElementById('birthdate').value,
                 occupation: document.getElementById('occupation').value,
@@ -259,26 +249,28 @@
             }
         }
 
-      function loadTreatmentHistory() {
-        if (!selectedPatient) return;
-        const tbody = document.querySelector('#treatmentHistory tbody');
-        tbody.innerHTML = '';
-        treatments
-            .filter(t => t.patientHN === selectedPatient.hn)
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .forEach(treatment => {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = treatment.date;
-                row.insertCell(1).textContent = treatment.symptoms;
-                row.insertCell(2).textContent = treatment.diagnosis;
-                row.insertCell(3).textContent = treatment.treatment;
-                const actionsCell = row.insertCell(4);
-                actionsCell.innerHTML = `
-                    <button onclick="showTreatmentDetail('${treatment.patientHN}', '${treatment.date}')">รายละเอียด</button>
-                    <button onclick="deleteTreatment('${treatment.patientHN}', '${treatment.date}')">ลบ</button>
-                `;
-            });
-    }
+        // ฟังก์ชัน loadTreatmentHistory เพื่อเพิ่มปุ่มออกใบรับรองแพทย์
+        function loadTreatmentHistory() {
+            if (!selectedPatient) return;
+            const tbody = document.querySelector('#treatmentHistory tbody');
+            tbody.innerHTML = '';
+            treatments
+                .filter(t => t.patientHN === selectedPatient.hn)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .forEach(treatment => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = treatment.date;
+                    row.insertCell(1).textContent = treatment.symptoms;
+                    row.insertCell(2).textContent = treatment.diagnosis;
+                    row.insertCell(3).textContent = treatment.treatment;
+                    const actionsCell = row.insertCell(4);
+                    actionsCell.innerHTML = `
+                <button onclick="showTreatmentDetail('${treatment.patientHN}', '${treatment.date}')">รายละเอียด</button>
+                <button onclick="deleteTreatment('${treatment.patientHN}', '${treatment.date}')">ลบ</button>
+                <button onclick="showMedicalCertificate('${treatment.patientHN}', '${treatment.date}')">ออกใบรับรองแพทย์</button>
+            `;
+                });
+        }
 
     function searchPatients() {
         const query = document.getElementById('patientSearch').value.toLowerCase();
@@ -372,6 +364,17 @@
         }
     }
 
+         function initializeBodyChart() {
+            canvas = new fabric.Canvas('bodyChart');
+            canvas.isDrawingMode = true;
+            canvas.freeDrawingBrush.width = 2;
+            canvas.freeDrawingBrush.color = "#ff0000";
+        }
+
+        function clearBodyChart() {
+            canvas.clear();
+        }
+        
     function updateBodyChart(dataUrl) {
         if (dataUrl) {
             fabric.Image.fromURL(dataUrl, function(img) {
@@ -483,13 +486,10 @@
           function generateMedicalCertificatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
-        
             doc.addFont('Sarabun-normal.ttf', 'Sarabun', 'normal');
-            doc.setFont('Sarabun');
-              
-                doc.setFontSize(16);
-              doc.setTextColor(0, 0, 0);
+            doc.setFont('Sarabun'); 
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
               
               // หัวกระดาษ
             doc.text('เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก', 20, 20);
@@ -510,41 +510,14 @@
             doc.text('ลงชื่อ..................................', 20, 180);
             doc.text(`(${document.getElementById('doctorName').value})`, 20, 190);
             doc.text('แพทย์ผู้ตรวจ', 20, 200);
-
-               // บันทึกไฟล์ PDF
+            alert('กำลังสร้าง PDF ใบรับรองแพทย์');
+            
+              // บันทึกไฟล์ PDF
             doc.save('medical_certificate.pdf');
               
             // เปิด PDF ในแท็บใหม่ (เหมาะสำหรับ iPad)
             window.open(doc.output('bloburl'), '_blank');
         
-        }
-          // อัปเดตฟังก์ชัน showMedicalCertificate
-        function showMedicalCertificate(patientHN, treatmentDate) {
-            document.getElementById('medicalCertificate').style.display = 'block';
-            document.getElementById('generatePDF').style.display = 'block';
-        }
-        
-        // อัปเดตฟังก์ชัน loadTreatmentHistory เพื่อเพิ่มปุ่มออกใบรับรองแพทย์
-        function loadTreatmentHistory() {
-            if (!selectedPatient) return;
-            const tbody = document.querySelector('#treatmentHistory tbody');
-            tbody.innerHTML = '';
-            treatments
-                .filter(t => t.patientHN === selectedPatient.hn)
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .forEach(treatment => {
-                    const row = tbody.insertRow();
-                    row.insertCell(0).textContent = treatment.date;
-                    row.insertCell(1).textContent = treatment.symptoms;
-                    row.insertCell(2).textContent = treatment.diagnosis;
-                    row.insertCell(3).textContent = treatment.treatment;
-                    const actionsCell = row.insertCell(4);
-                    actionsCell.innerHTML = `
-                <button onclick="showTreatmentDetail('${treatment.patientHN}', '${treatment.date}')">รายละเอียด</button>
-                <button onclick="deleteTreatment('${treatment.patientHN}', '${treatment.date}')">ลบ</button>
-                <button onclick="showMedicalCertificate('${treatment.patientHN}', '${treatment.date}')">ออกใบรับรองแพทย์</button>
-            `;
-                });
         }
     </script>
 </body>
