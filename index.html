@@ -233,7 +233,7 @@
             };
             treatments.push(treatment);
             saveTreatments();
-            ();
+
             document.getElementById('treatmentForm').reset();
             clearBodyChart(); // ล้างรูปวาดหลังจากบันทึก
             alert('บันทึกการรักษาเรียบร้อยแล้ว');
@@ -283,7 +283,7 @@
             <p><strong>ประวัติการแพ้ยา:</strong> ${selectedPatient.allergies}</p>
             `;
                showTab('treatmentTabContent');
-            ();
+    
             
             const latestTreatment = treatments
                 .filter(t => t.patientHN === selectedPatient.hn)
@@ -450,7 +450,7 @@
         // บันทึกสถานะปัจจุบันของ canvas ทุกครั้งที่มีการวาด
         saveCanvasState();
     });
-}
+
 function saveCanvasState() {
     // บันทึกสถานะปัจจุบันของ canvas
     localStorage.setItem('bodyChartState', JSON.stringify(canvas.toJSON()));
@@ -469,8 +469,8 @@ function loadCanvasState() {
         img.scaleToWidth(canvas.width);
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
         });
-    });
-}
+    }
+
         
    
     function addSampleData() {
