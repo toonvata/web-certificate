@@ -6,6 +6,7 @@
     <title>ระบบบันทึกประวัติผู้ป่วยและการรักษา</title>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
        <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="your-main-script.js" defer></script>
     <script src="Sarabun-normal.js"></script>
     <style>
       
@@ -159,7 +160,9 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeBodyChart();
+            loadCanvasState();
             loadPatients();
+            loadTreatments();
             addSampleData();
             document.getElementById('patientForm').addEventListener('submit', addPatient);
             document.getElementById('treatmentForm').addEventListener('submit', addTreatment);
@@ -196,7 +199,13 @@
             loadPatients();
                document.getElementById('patientForm').reset();
         }
-        
+
+        function updateUI() {
+    loadPatients();
+    if (selectedPatient) {
+        loadTreatmentHistory();
+    }
+}
           function savePatients() {
             localStorage.setItem('patients', JSON.stringify(patients));
         }
@@ -225,7 +234,7 @@
             };
             treatments.push(treatment);
             saveTreatments();
-            loadTreatmentHistory();
+            ();
             document.getElementById('treatmentForm').reset();
             clearBodyChart(); // ล้างรูปวาดหลังจากบันทึก
             alert('บันทึกการรักษาเรียบร้อยแล้ว');
@@ -275,7 +284,7 @@
             <p><strong>ประวัติการแพ้ยา:</strong> ${selectedPatient.allergies}</p>
             `;
                showTab('treatmentTabContent');
-            loadTreatmentHistory();
+            ();
             
             const latestTreatment = treatments
                 .filter(t => t.patientHN === selectedPatient.hn)
@@ -427,42 +436,44 @@
     canvas = new fabric.Canvas('bodyChart', {
         width: 300,
         height: 400
+     
     });
 
-    fabric.Image.fromURL(document.getElementById('bodyChartImage').src, function(img) {
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-            scaleX: canvas.width / img.width,
-            scaleY: canvas.height / img.height
-        });
-    });
-
+ fabric.Image.fromURL('https://st5.depositphotos.com/6464944/64924/v/1600/depositphotos_649242858-stock-illustration-human-male-body-anatomy-featuring.jpg', function(img) {
+         img.scaleToWidth(canvas.width);
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
     canvas.isDrawingMode = true;
     canvas.freeDrawingBrush.width = 2;
     canvas.freeDrawingBrush.color = "#0d0000";
+     });
+}
+         canvas.on('path:created', function() {
+        // บันทึกสถานะปัจจุบันของ canvas ทุกครั้งที่มีการวาด
+        saveCanvasState();
+    });
+}
+function saveCanvasState() {
+    // บันทึกสถานะปัจจุบันของ canvas
+    localStorage.setItem('bodyChartState', JSON.stringify(canvas.toJSON()));
 }
 
+function loadCanvasState() {
+    // โหลดสถานะที่บันทึกไว้ของ canvas
+    const savedState = localStorage.getItem('bodyChartState');
+    if (savedState) {
+        canvas.loadFromJSON(savedState, canvas.renderAll.bind(canvas));
+    }
+}
      function clearBodyChart() {
     canvas.clear();
-    fabric.Image.fromURL(document.getElementById('bodyChartImage').src, function(img) {
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-            scaleX: canvas.width / img.width,
-            scaleY: canvas.height / img.height
+    fabric.Image.fromURL('https://st5.depositphotos.com/6464944/64924/v/1600/depositphotos_649242858-stock-illustration-human-male-body-anatomy-featuring.jpg', function(img) {
+        img.scaleToWidth(canvas.width);
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
         });
     });
 }
         
-    function updateBodyChart(dataUrl) {
-        if (dataUrl) {
-            fabric.Image.fromURL(dataUrl, function(img) {
-                canvas.clear();
-                canvas.add(img);
-                canvas.renderAll();
-            });
-        } else {
-            canvas.clear();
-        }
-    }
-
+   
     function addSampleData() {
         if (patients.length === 0) {
             const samplePatients = [
