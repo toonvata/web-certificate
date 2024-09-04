@@ -128,11 +128,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeBodyChart();
             loadPatients();
+            addSampleData();
             document.getElementById('patientForm').addEventListener('submit', addPatient);
             document.getElementById('treatmentForm').addEventListener('submit', addTreatment);
             document.getElementById('patientSearch').addEventListener('input', searchPatients);
             document.getElementById('treatmentPatientSearch').addEventListener('input', searchPatientsForTreatment);
-            addSampleData();
+            
         });
 
         function showTab(tabId) {
@@ -226,20 +227,20 @@
             selectedPatient = patients.find(p => p.hn === hn);
             document.getElementById('selectedPatientInfo').innerHTML = `
                 <h3>ข้อมูลผู้ป่วย</h3>
-                <p><strong>HN:</strong> ${patient.hn}</p>
-                <p><strong>ชื่อ-นามสกุล:</strong> ${patient.name}</p>
-                <p><strong>วันเกิด:</strong> ${patient.birthdate}</p>
-                <p><strong>อาชีพ:</strong> ${patient.occupation}</p>
-                <p><strong>ที่อยู่:</strong> ${patient.address}</p>
-                <p><strong>เบอร์โทรศัพท์:</strong> ${patient.phone}</p>
-                <p><strong>โรคประจำตัว:</strong> ${patient.underlyingDisease}</p>
-                <p><strong>ประวัติการแพ้ยา:</strong> ${patient.allergies}</p>
+           <p><strong>HN:</strong> ${selectedPatient.hn}</p>
+            <p><strong>ชื่อ-นามสกุล:</strong> ${selectedPatient.name}</p>
+            <p><strong>วันเกิด:</strong> ${selectedPatient.birthdate}</p>
+            <p><strong>อาชีพ:</strong> ${selectedPatient.occupation}</p>
+            <p><strong>ที่อยู่:</strong> ${selectedPatient.address}</p>
+            <p><strong>เบอร์โทรศัพท์:</strong> ${selectedPatient.phone}</p>
+            <p><strong>โรคประจำตัว:</strong> ${selectedPatient.underlyingDisease}</p>
+            <p><strong>ประวัติการแพ้ยา:</strong> ${selectedPatient.allergies}</p>
             `;
                showTab('treatmentTabContent');
             loadTreatmentHistory();
             
             const latestTreatment = treatments
-                .filter(t => t.patientHN === patient.hn)
+                .filter(t => t.patientHN === selectedPatient.hn)
                 .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
             
             if (latestTreatment && latestTreatment.bodyChart) {
