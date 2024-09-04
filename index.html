@@ -30,7 +30,29 @@
         #bodyChartImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
         #bodyChart { position: absolute; top: 0; left: 0; }
          #medicalCertificate { display: none; }
-   
+   #searchResults {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+#searchResults ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#searchResults li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#searchResults li:hover {
+    background-color: #f0f0f0;
+}
     </style>
 </head>
 <body>
@@ -79,6 +101,7 @@
             <div id="selectedPatientInfo" class="patient-info-box"></div>
             <form id="treatmentForm">
                 <input type="text" id="treatmentPatientSearch" placeholder="ค้นหาผู้ป่วย (ชื่อหรือ HN)">
+                <div id="searchResults"></div>
                 <input type="date" id="treatmentDate" required>
                 <fieldset>
                     <legend>Vital Signs</legend>
@@ -300,13 +323,23 @@
         const filteredPatients = patients.filter(patient => 
             patient.name.toLowerCase().includes(query) || patient.hn.toLowerCase().includes(query)
         );
-        if (filteredPatients.length === 1) {
-            selectPatient(filteredPatients[0]);
-        } else {
-            selectedPatient = null;
-            document.getElementById('selectedPatientInfo').innerHTML = '';
-        }
+        const resultsContainer = document.getElementById('searchResults');
+    resultsContainer.innerHTML = ''; // ล้างผลลัพธ์เก่า
+
+    if (filteredPatients.length === 0) {
+        resultsContainer.innerHTML = '<p>ไม่พบผู้ป่วย</p>';
+    } else {
+        const ul = document.createElement('ul');
+        filteredPatients.forEach(patient => {
+            const li = document.createElement('li');
+            li.textContent = `${patient.name} (HN: ${patient.hn})`;
+            li.onclick = () => selectPatientForTreatment(patient.hn);
+            ul.appendChild(li);
+        });
+        resultsContainer.appendChild(ul);
     }
+}
+
 
     function deletePatient(hn) {
         if (confirm('คุณแน่ใจหรือไม่ที่จะลบข้อมูลผู้ป่วยรายนี้?')) {
@@ -319,13 +352,21 @@
         }
     }
 
-    function selectPatientForTreatment(hn) {
-        const patient = patients.find(p => p.hn === hn);
-        if (patient) {
-            showTab('treatmentTabContent');
-            selectPatient(patient);
-        }
+   function selectPatientForTreatment(hn) {
+    const patient = patients.find(p => p.hn === hn);
+    if (patient) {
+        selectedPatient = patient;
+        document.getElementById('selectedPatientInfo').innerHTML = `
+            <h3>ข้อมูลผู้ป่วย</h3>
+            <p><strong>HN:</strong> ${patient.hn}</p>
+            <p><strong>ชื่อ-นามสกุล:</strong> ${patient.name}</p>
+            <p><strong>วันเกิด:</strong> ${patient.birthdate}</p>
+            <p><strong>เบอร์โทรศัพท์:</strong> ${patient.phone}</p>
+        `;
+        document.getElementById('treatmentPatientSearch').value = patient.name;
+        document.getElementById('searchResults').innerHTML = ''; // ล้างผลลัพธ์การค้นหา
     }
+}
 
     function showTreatmentDetail(patientHN, treatmentDate) {
         const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
@@ -381,7 +422,7 @@
 
     canvas.isDrawingMode = true;
     canvas.freeDrawingBrush.width = 2;
-    canvas.freeDrawingBrush.color = "#ff0000";
+    canvas.freeDrawingBrush.color = "#0d0000";
 }
 
      function clearBodyChart() {
