@@ -117,76 +117,7 @@
         </div>
     </div>
 
-   // เพิ่มส่วนของใบรับรองแพทย์ //
-        <div id="medicalCertificate" class="medicalCertificate">
-            <div class="header">
-                <h1>เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก</h1>
-                <p>162 ถนนสวนสมเด็จ ต.หน้าเมือง อ.เมือง จ.ฉะเชิงเทรา</p>
-            </div>
-            <div class="title">ใบรับรองแพทย์ / Medical Certificate</div>
-            <div class="form-row">
-                <label for="certificateNumber">เลขที่:</label>
-                <input type="text" id="certificateNumber" placeholder="certificateNumber (สร้างอัตโนมัติ)" readonly>
-            </div>
-            <div class="form-row">
-                <label for="doctorName">ข้าพเจ้า:</label>
-                <select id="doctorName" required>
-                    <option value="">เลือกแพทย์</option>
-                    <option value="แพทย์นิรัตน์พงศ์ เชาวนิช">แพทย์นิรัตน์พงศ์ เชาวนิช</option>
-                    <option value="นายวาตา โสดา">นายวาตา โสดา</option>
-                </select>
-            </div>
-            <p>ปฏิบัติงาน ณ เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก</p>
-            <div class="form-row">
-                <label for="licenseType">เป็นผู้ประกอบวิชาชีพ:</label>
-                <select id="licenseType" required>
-                    <option value="">เลือกประเภทใบอนุญาต</option>
-                    <option value="เวชกรรมแผนปัจจุบัน">เวชกรรมแผนปัจจุบัน</option>
-                    <option value="แพทย์แผนไทยประยุกต์">แพทย์แผนไทยประยุกต์</option>
-                </select>
-            </div>
-            <div class="form-row">
-                <label for="licenseNumber">ใบอนุญาตประกอบวิชาชีพเลขที่:</label>
-                <select id="licenseNumber" required>
-                    <option value="">เลือกเลขที่ใบประกอบวิชาชีพ</option>
-                    <option value="เวชกรรมแผนปัจจุบัน">544017</option>
-                    <option value="แพทย์แผนไทยประยุกต์">พทป.2381</option>
-                 </select>
-            </div>
-            <div class="form-row">
-                <label for="patientName">ได้ตรวจร่างกายผู้ป่วยชื่อ:</label>
-                <input type="text" id="patientName" required>
-            </div>
-            <div class="form-row">
-                <label for="examinationDate">เมื่อวันที่:</label>
-                <input type="date" id="examinationDate" required>
-            </div>
-            <div class="form-row">
-                <label for="diagnosis">เห็นว่า:</label>
-                <input type="text" id="diagnosis" required>
-            </div>
-            <div class="form-row">
-                <label for="startDate">ตั้งแต่วันที่:</label>
-                <input type="date" id="startDate" required>
-            </div>
-            <div class="form-row">
-                <label for="endDate">ถึงวันที่:</label>
-                <input type="date" id="endDate" required>
-            </div>
-            <div class="form-row">
-                <label for="totalDays">เป็นจำนวน:</label>
-                <input type="number" id="totalDays" required> วัน
-            </div>
-            <p>ทั้งนี้ได้ให้การรักษาพร้อมคำแนะนำไว้เรียบร้อยแล้ว</p>
-            <div class="signature">
-                <p>ลงนาม ............................................</p>
-                <p>แพทย์ผู้ตรวจ</p>
-            </div>
-            </div>
-            <button onclick="generateMedicalCertificatePDF()">สร้าง PDF ใบรับรองแพทย์</button>
-    </div>
- </div>
-  
+
     
     <script>
         let patients = JSON.parse(localStorage.getItem('patients')) || [];
