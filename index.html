@@ -13,9 +13,9 @@
     .container { max-width: 1200px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1, h2 { color: #333; }
         .tabs { display: flex; margin-bottom: 20px; }
-        .tab { padding: 10px 20px; cursor: pointer; border: none; background-color: #ddd; font-size: 16px; }
+        .tab { padding: 10px 20px; cursor: pointer; border: none; background-color: #633838; font-size: 16px; }
         .tab.active { background-color: #fff; }
-        .tab-content { display: none; padding: 20px; background-color: #fff; }
+        .tab-content { display: none; padding: 20px; background-color: #633838; }
         .tab-content.active { display: block; }
         #treatmentTab { background-color: #1a237e; color: #fff; }
         form { display: grid; gap: 10px; }
@@ -96,6 +96,7 @@
                     <img id="bodyChartImage" src="https://st5.depositphotos.com/6464944/64924/v/1600/depositphotos_649242858-stock-illustration-human-male-body-anatomy-featuring.jpg" alt="Body Chart">
                     <canvas id="bodyChart" width="300" height="400"></canvas>
                 </div>
+                
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
                 <button onclick="showMedicalCertificate()">สร้างใบรับรองแพทย์</button>
@@ -117,7 +118,7 @@
         </div>
     </div>
 
-    <!-- เพิ่มส่วนของใบรับรองแพทย์ -->
+   // เพิ่มส่วนของใบรับรองแพทย์ //
         <div id="medicalCertificate" class="medicalCertificate">
             <div class="header">
                 <h1>เฮ้าส์ ออฟ เฮิร์บ เวลเนสสหคลินิก</h1>
@@ -182,7 +183,7 @@
                 <p>ลงนาม ............................................</p>
                 <p>แพทย์ผู้ตรวจ</p>
             </div>
-             </div>
+            </div>
             <button onclick="generateMedicalCertificatePDF()">สร้าง PDF ใบรับรองแพทย์</button>
     </div>
  </div>
@@ -504,7 +505,7 @@
         }
     }
 
- // เพิ่มฟังก์ชันสำหรับใบรับรองแพทย์
+         // เพิ่มฟังก์ชันสำหรับใบรับรองแพทย์
         function showMedicalCertificate(patientHN, treatmentDate) {
             const patient = patients.find(p => p.hn === patientHN);
             const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
