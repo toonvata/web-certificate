@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบบันทึกประวัติผู้ป่วยและการรักษา</title>
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script src="Sarabun-normal.js"></script>
     <style>
@@ -30,29 +30,8 @@
         #bodyChartImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; }
         #bodyChart { position: absolute; top: 0; left: 0; }
          #medicalCertificate { display: none; }
-   #searchResults {
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-}
-
-#searchResults ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#searchResults li {
-    padding: 10px;
-    cursor: pointer;
-}
-
-#searchResults li:hover {
-    background-color: #f0f0f0;
-}
+   
+ 
     </style>
 </head>
 <body>
@@ -132,6 +111,7 @@
 <!-- สำหรับแสดงใบรับรองแพทย์ -->
 <div id="medicalCertificate" style="display:none;">
     <!-- เนื้อหาของใบรับรองแพทย์ -->
+
 </div>
             <h2>ประวัติการรักษา</h2>
             <table id="treatmentHistory">
@@ -195,19 +175,12 @@
                 allergies: document.getElementById('allergies').value
             };
             patients.push(patient);
+            saveTreatments();
             loadPatients();
                document.getElementById('patientForm').reset();
         }
 
-        function updateUI() {
-    loadPatients();
-    if (selectedPatient) {
-        loadTreatmentHistory();
-    }
-}
-          function savePatients() {
-            localStorage.setItem('patients', JSON.stringify(patients));
-        }
+         
        
         function addTreatment(e) {
             e.preventDefault();
@@ -246,7 +219,9 @@
             return 'HN' + Date.now().toString().slice(-6);
         }
 
-    
+         function savePatients() {
+            localStorage.setItem('patients', JSON.stringify(patients));
+        }
 
         function saveTreatments() {
             localStorage.setItem('treatments', JSON.stringify(treatments));
@@ -445,7 +420,6 @@
     canvas.freeDrawingBrush.width = 2;
     canvas.freeDrawingBrush.color = "#0d0000";
      });
-}
          canvas.on('path:created', function() {
         // บันทึกสถานะปัจจุบันของ canvas ทุกครั้งที่มีการวาด
         saveCanvasState();
@@ -530,23 +504,23 @@ function loadCanvasState() {
     }
 
          // เพิ่มฟังก์ชันสำหรับใบรับรองแพทย์
-        function showMedicalCertificate(patientHN, treatmentDate) {
-            const patient = patients.find(p => p.hn === patientHN);
-            const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
-        
-            if (patient && treatment) {
-                document.getElementById('certificateNumber').value = 'CERT' + Date.now().toString().slice(-6);
-                document.getElementById('patientName').value = selectedPatient.name;
-                document.getElementById('examinationDate').value = treatment.date;
-                document.getElementById('diagnosis').value = treatment.diagnosis;
-                document.getElementById('startDate').value = treatment.date;
-                document.getElementById('endDate').value = treatment.nextAppointment || treatment.date;
-                calculateDays();
-               
-               
-                document.getElementById('medicalCertificate').style.display = 'block';
-            }
-        }
+       function showMedicalCertificate(patientHN, treatmentDate) {
+    const patient = patients.find(p => p.hn === patientHN);
+    const treatment = treatments.find(t => t.patientHN === patientHN && t.date === treatmentDate);
+
+    if (patient && treatment) {
+        document.getElementById('certificateNumber').value = generateCertificateNumber();
+        document.getElementById('patientName').value = patient.name;
+        document.getElementById('examinationDate').value = treatment.date;
+        document.getElementById('diagnosis').value = treatment.diagnosis;
+        document.getElementById('startDate').value = treatment.date;
+        document.getElementById('endDate').value = treatment.nextAppointment || treatment.date;
+        calculateDays();
+
+        document.getElementById('medicalCertificate').style.display = 'block';
+        document.getElementById('generatePDFButton').style.display = 'block'; // แสดงปุ่มสร้าง PDF
+    }
+}
 
         function calculateDays() {
             const startDate = new Date(document.getElementById('startDate').value);
