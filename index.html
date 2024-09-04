@@ -8,8 +8,7 @@
      <script src="Sarabun-normal.js"></script>
     <style>
       
-        body { font-family: 'Sarabun', sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; }
-       
+      
     .container { max-width: 1200px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1, h2 { color: #333; }
         .tabs { display: flex; margin-bottom: 20px; }
@@ -99,9 +98,7 @@
                 
                 <button type="button" onclick="clearBodyChart()">ล้างรูปวาด</button>
                 <button type="submit">บันทึกการรักษา</button>
-                <button onclick="showMedicalCertificate()">สร้างใบรับรองแพทย์</button>
              
-            
             <h2>ประวัติการรักษา</h2>
             <table id="treatmentHistory">
                 <thead>
@@ -206,11 +203,14 @@
         });
 
         function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-               document.getElementById(tabId).style.display = 'block';
+             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
             document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+            if (tabId === 'patientTab') {
+                document.getElementById('medicalCertificate').style.display = 'none';
+            }
         }
-
         function initializeBodyChart() {
             canvas = new fabric.Canvas('bodyChart');
             canvas.isDrawingMode = true;
@@ -237,9 +237,12 @@
             patients.push(patient);
             savePatients();
             loadPatients();
-            e.target.reset();
+               document.getElementById('patientForm').reset();
         }
-
+          function savePatients() {
+            localStorage.setItem('patients', JSON.stringify(patients));
+        }
+       
         function addTreatment(e) {
             e.preventDefault();
             if (!selectedPatient) {
@@ -273,9 +276,7 @@
             return 'HN' + Date.now().toString().slice(-6);
         }
 
-        function savePatients() {
-            localStorage.setItem('patients', JSON.stringify(patients));
-        }
+    
 
         function saveTreatments() {
             localStorage.setItem('treatments', JSON.stringify(treatments));
@@ -311,6 +312,7 @@
                 <p><strong>โรคประจำตัว:</strong> ${patient.underlyingDisease}</p>
                 <p><strong>ประวัติการแพ้ยา:</strong> ${patient.allergies}</p>
             `;
+               showTab('treatmentTabContent');
             loadTreatmentHistory();
             
             const latestTreatment = treatments
@@ -547,7 +549,7 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-               doc.addFileToVFS('Sarabun-normal.ttf', sarabunNormalBase64);
+        
             doc.addFont('Sarabun-normal.ttf', 'Sarabun', 'normal');
             doc.setFont('Sarabun');
               
